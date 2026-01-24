@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>About - HostelMate</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Roboto:wght@400;500&display=swap');
+
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Roboto',sans-serif;background:#fff;overflow-x:hidden;padding-bottom:200px;} /* extra space for footer */
+
+/* 2D GRID BACKGROUND */
+canvas{
+  position:fixed;
+  inset:0;
+  z-index:-1;
+}
+
+/* LEFT PANEL */
+.left-panel{
+  position:absolute;
+  top:5%;
+  left:5%;
+  width:45%;
+  color:#000;
+  display:flex;
+  flex-direction:column;
+  gap:18px;
+}
+
+.uni-header{display:flex;align-items:center;gap:16px;}
+.badge-small{
+  width:80px;
+  border-radius:16px;
+  box-shadow:0 6px 18px rgba(0,0,0,0.25);
+}
+
+.uni-text h1{
+  font-family:'Playfair Display',serif;
+  font-size:48px;
+  color:#0d3a80;
+  font-weight:900;
+  margin-bottom:4px;
+}
+.uni-text h4{
+  font-weight:bold;
+  font-size:18px;
+  color:#000;
+  margin-bottom:2px;
+}
+.uni-text p.italic{font-style:italic;font-size:14px;color:#000;margin-bottom:2px;}
+.uni-text p.orange{font-size:12px;color:orange;font-weight:bold;}
+
+/* UNIVERSITY INTRO */
+.uni-intro{
+  margin-top:20px;
+  font-size:14px;
+  line-height:1.6;
+  color:#000;
+}
+.uni-intro ul{
+  margin-left:16px;
+  margin-top:6px;
+}
+.uni-intro li{
+  margin-bottom:6px;
+}
+
+/* HOSTELS SECTION */
+#hostelsSection{
+  margin-top:30px; /* distance below uni info */
+  padding:20px 5%;
+  position:relative;
+  padding-bottom:150px; /* ensures boxes don't overlap footer */
+}
+#hostelsSection h2{
+  font-family:'Playfair Display',serif;
+  font-size:32px;
+  color:#0d3a80;
+  margin-bottom:20px;
+}
+
+.hostels-container{
+  display:flex;
+  align-items:center;
+  position:relative;
+}
+.hostels-row{
+  display:flex;
+  overflow-x:auto;
+  gap:30px; /* spacing between boxes */
+  scroll-behavior:smooth;
+  padding:10px 0 60px 0; /* extra bottom padding for spacing from footer */
+}
+.hostel-box{
+  flex:0 0 200px;
+  height:200px;
+  border-radius:20px;
+  background:#f0f0f0;
+  position:relative;
+  transition:0.3s;
+  box-shadow:0 4px 10px rgba(0,0,0,0.1);
+  cursor:pointer;
+}
+.hostel-box:hover{
+  box-shadow:0 0 20px #0d6efd,0 0 40px #0d6efd;
+  transform:scale(1.05);
+}
+.hostel-box::after{
+  content:attr(data-name);
+  position:absolute;
+  bottom:0;
+  left:0;
+  width:100%;
+  text-align:center;
+  background:rgba(13,58,128,0.7);
+  color:#fff;
+  font-size:14px;
+  font-weight:bold;
+  padding:6px 0;
+  border-bottom-left-radius:20px;
+  border-bottom-right-radius:20px;
+  opacity:0;
+  transition:0.3s;
+}
+.hostel-box:hover::after{
+  opacity:1;
+}
+
+/* SCROLL BUTTONS */
+.scroll-left,
+.scroll-right{
+  border:none;
+  background:#0d6efd;
+  color:#fff;
+  font-size:24px;
+  padding:10px 16px;
+  border-radius:12px;
+  cursor:pointer;
+  transition:0.3s;
+}
+.scroll-left:hover,
+.scroll-right:hover{
+  background:#0956b3;
+}
+.scroll-left{margin-right:10px;}
+.scroll-right{margin-left:10px;}
+
+/* RIGHT PANEL SLIDESHOW */
+.right-panel{
+  position:absolute;
+  top:5%;
+  right:5%;
+  width:45%;
+  height:calc(100% - 10%);
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+}
+.slideshow{
+  position:relative;
+  border-radius:26px;
+  overflow:hidden;
+  backdrop-filter:blur(12px);
+  background:rgba(255,255,255,0.15);
+  border:1px solid rgba(0,0,0,0.2);
+  box-shadow:0 20px 60px rgba(0,0,0,0.2);
+  transition:0.5s ease;
+  cursor:pointer;
+}
+.slideshow:hover{
+  transform:scale(1.02);
+  box-shadow:0 0 25px rgba(13,58,128,0.6);
+}
+.slideshow img{
+  width:100%;
+  height:280px;
+  object-fit:cover;
+  display:block;
+  transition:0.3s ease;
+}
+.slide-label{
+  position:absolute;
+  bottom:10px;
+  left:10px;
+  max-width:70%;
+  background:rgba(13,58,128,0.7);
+  color:#fff;
+  font-size:14px;
+  font-weight:bold;
+  text-align:center;
+  padding:6px 12px;
+  border-radius:12px;
+}
+.slideshow-dots{
+  position:absolute;
+  bottom:10px;
+  right:10px;
+  display:flex;
+  gap:6px;
+}
+.slideshow-dots span{
+  display:block;
+  width:10px;
+  height:10px;
+  background:rgba(255,255,255,0.6);
+  border-radius:50%;
+  cursor:pointer;
+  transition:0.3s;
+}
+.slideshow-dots span:hover,
+.slideshow-dots span.active{
+  background:#0d6efd;
+  transform:scale(1.3);
+}
+/* HOSTEL INFO BOX - ALIGNED WITH HOSTELS SECTION */
+.hostel-info-box{
+  position:absolute;
+  left:calc(100% + 50px);
+  top:60px;
+  width:350px;
+  height:280px;
+  border-radius:20px;
+  backdrop-filter:blur(12px);
+  background:rgba(255,255,255,0.15);
+  border:1px solid rgba(0,0,0,0.2);
+  box-shadow:0 20px 60px rgba(0,0,0,0.2);
+  padding:25px;
+  transition:0.5s ease;
+  opacity:0;
+  pointer-events:none;
+  z-index:10;
+  display:flex;
+  flex-direction:column;
+}
+.hostel-info-box.active{
+  opacity:1;
+  pointer-events:auto;
+}
+.hostel-info-box:hover{
+  box-shadow:0 0 25px rgba(13,58,128,0.6);
+}
+
+.info-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:15px;
+  padding-bottom:12px;
+  border-bottom:2px solid rgba(13,58,128,0.3);
+}
+.info-header h3{
+  font-family:'Playfair Display',serif;
+  font-size:20px;
+  color:#0d3a80;
+  font-weight:700;
+}
+.close-btn{
+  background:rgba(220,53,69,0.2);
+  border:none;
+  color:#dc3545;
+  font-size:18px;
+  width:32px;
+  height:32px;
+  border-radius:50%;
+  cursor:pointer;
+  transition:0.3s;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.close-btn:hover{
+  background:#dc3545;
+  color:#fff;
+  box-shadow:0 0 15px rgba(220,53,69,0.5);
+}
+.info-content{
+  font-size:13px;
+  line-height:1.7;
+  color:#000;
+  max-height:300px;
+  overflow-y:auto;
+  margin-bottom:15px;
+}
+.info-content p{
+  margin-bottom:10px;
+}
+.info-content ul{
+  margin-left:18px;
+  margin-top:8px;
+}
+.info-content li{
+  margin-bottom:6px;
+}
+.info-navigation{
+  display:flex;
+  gap:8px;
+  justify-content:center;
+  padding-top:12px;
+  border-top:2px solid rgba(13,58,128,0.3);
+}
+.nav-btn{
+  background:#0d6efd;
+  border:none;
+  color:#fff;
+  font-size:13px;
+  padding:8px 16px;
+  border-radius:10px;
+  cursor:pointer;
+  transition:0.3s;
+  display:flex;
+  align-items:center;
+  gap:6px;
+  font-weight:500;
+}
+.nav-btn:hover{
+  background:#0956b3;
+  box-shadow:0 0 15px rgba(13,110,253,0.5);
+  transform:translateY(-2px);
+}
+.nav-btn:disabled{
+  background:#6c757d;
+  cursor:not-allowed;
+  opacity:0.5;
+}
+
+/* FOOTER FIXED */
+.footer-nav{
+  position:fixed;
+  bottom:20px;
+  left:5%;
+  z-index:1000;
+}
+.footer-nav ul{
+  display:flex;
+  gap:20px;
+  list-style:none;
+}
+.footer-nav li{
+  position:relative;
+  padding:10px 15px;
+  background:rgba(0,0,0,0.05);
+  backdrop-filter:blur(6px);
+  border-radius:16px;
+  cursor:pointer;
+  transition:0.3s;
+}
+.footer-nav li:nth-child(2){
+  box-shadow:0 0 20px #0d6efd,0 0 40px #0d6efd;
+}
+.footer-nav li:hover{
+  box-shadow:0 0 15px #0d6efd,0 0 25px #0d6efd;
+}
+.footer-nav li i{
+  opacity:0;
+  position:absolute;
+  left:50%;
+  top:50%;
+  transform:translate(-50%,-50%);
+  transition:0.25s;
+}
+.footer-nav li span{transition:0.25s;}
+.footer-nav li:hover span{opacity:0;}
+.footer-nav li:hover i{opacity:1;}
+
+.copyright-box{
+  position:fixed;
+  right:5%;
+  bottom:20px;
+  width:380px;
+  padding:12px 20px;
+  border-radius:20px;
+  background:rgba(255,255,255,0.15);
+  backdrop-filter:blur(12px);
+  border:1px solid rgba(0,0,0,0.2);
+  text-align:center;
+  font-size:12px;
+  color:#000;
+  box-shadow:0 10px 30px rgba(0,123,255,0.2);
+  transition:0.3s;
+  z-index:1000;
+}
+.copyright-box:hover{
+  box-shadow:0 0 20px #0d6efd,0 0 40px #0d6efd;
+  transform:scale(1.02);
+}
+.copyright-box a{
+  color:#0d6efd;
+  text-decoration:none;
+  font-weight:bold;
+}
+</style>
+</head>
+<body>
+
+<canvas id="grid"></canvas>
+
+<!-- LEFT PANEL -->
+<div class="left-panel">
+  <div class="uni-header">
+    <img src="https://i.ibb.co/bMzF5dqm/59e47443259fadca4151fd6273ac0ebd.jpg" class="badge-small">
+    <div class="uni-text">
+      <h1>U E T</h1>
+      <h4>UNIVERSITY OF ENGINEERING & TECHNOLOGY, LAHORE</h4>
+      <p class="orange">The Best Way to predict your future is to create it - 104 years of excellence</p>
+    </div>
+  </div>
+
+  <div class="uni-intro">
+    <p>The University of Engineering & Technology (UET) Lahore, established in 1921 as Mughalpura Technical College, is Pakistan's oldest and leading public engineering university, offering Bachelors, Masters, and PhDs in STEM fields.</p>
+    <ul>
+      <li><strong>History:</strong> Started as Mughalpura Technical College, became Maclagan Engineering College in 1923, and gained university status as UET in 1972.</li>
+      <li><strong>Academics:</strong> Offers programs across Civil, Electrical, Mechanical, Computer Engineering, Architecture, and Business, with international recognition for OBE system.</li>
+      <li><strong>Reputation:</strong> Top-tier, highly selective, known for academic excellence and research.</li>
+      <li><strong>Campuses:</strong> Main Lahore campus and satellite campuses in Faisalabad, Kala Shah Kaku, and Narowal.</li>
+      <li><strong>Impact:</strong> Graduates serving globally, fostering innovation through research and industry links.</li>
+    </ul>
+  </div>
+
+  <!-- HOSTELS SECTION -->
+  <div id="hostelsSection">
+    <h2>UET Hostels</h2>
+    <div class="hostels-container">
+      <button class="scroll-left">&lt;</button>
+      <div class="hostels-row">
+
+        <div class="hostel-box" data-name="C-Hall" data-index="0" style="background-image:url('https://i.ibb.co/23DRNs5V/Whats-App-Image-2025-12-29-at-5-30-08-PM-1.jpg')"></div>
+        <div class="hostel-box" data-name="Umar Hall" data-index="1" style="background-image:url('https://i.ibb.co/tMQVmRxs/Whats-App-Image-2025-12-29-at-5-30-08-PM.jpg')"></div>
+        <div class="hostel-box" data-name="New Girls Hostel" data-index="2" style="background-image:url('https://i.ibb.co/p6pdq0z3/Whats-App-Image-2025-12-29-at-5-30-07-PM-2.jpg')"></div>
+        <div class="hostel-box" data-name="Bachelor Faculty hostel" data-index="3" style="background-image:url('https://i.ibb.co/hJzRVvqm/Whats-App-Image-2025-12-29-at-5-30-07-PM-1.jpg')"></div>
+        <div class="hostel-box" data-name="Khadeeja Hall" data-index="4" style="background-image:url('https://i.ibb.co/tMmMVJQx/Whats-App-Image-2025-12-29-at-5-30-07-PM.jpg')"></div>
+        <div class="hostel-box" data-name="Faculty Hostel" data-index="5" style="background-image:url('https://i.ibb.co/kVk55RHZ/Whats-App-Image-2025-12-29-at-5-30-06-PM-1.jpg')"></div>
+        <div class="hostel-box" data-name="Al-Zohra Hall" data-index="6" style="background-image:url('https://i.ibb.co/21NF2rGV/Whats-App-Image-2025-12-29-at-5-30-06-PM.jpg')"></div>
+        <div class="hostel-box" data-name="Khalid Hall" data-index="7" style="background-image:url('https://i.ibb.co/KzycJv7b/Whats-App-Image-2025-12-29-at-5-30-02-PM.jpg')"></div>
+        <div class="hostel-box" data-name="Abdul-Sattar Edhi Hall" data-index="8" style="background-image:url('https://i.ibb.co/JjxXVnLq/Whats-App-Image-2025-12-29-at-5-26-59-PM-1.jpg')"></div>
+        <div class="hostel-box" data-name="Muhammad Bin Qasim Hall" data-index="9" style="background-image:url('https://i.ibb.co/CKcxvy5f/Whats-App-Image-2025-12-29-at-5-26-59-PM.jpg')"></div>
+        <div class="hostel-box" data-name="Zubair Hall" data-index="10" style="background-image:url('https://i.ibb.co/Xf5fZRZT/Whats-App-Image-2025-12-29-at-5-26-58-PM-2.jpg')"></div>
+        <div class="hostel-box" data-name="S.Mahmood Gaznavi Hall" data-index="11" style="background-image:url('https://i.ibb.co/Xfzvgn0M/Whats-App-Image-2025-12-29-at-5-26-58-PM-1.jpg')"></div>
+        <div class="hostel-box" data-name="Allama Iqbal Hall" data-index="12" style="background-image:url('https://i.ibb.co/nXkQzkf/Whats-App-Image-2025-12-29-at-5-26-58-PM.jpg')"></div>
+        <div class="hostel-box" data-name="Sir Syed Hall" data-index="13" style="background-image:url('https://i.ibb.co/2Y1tTCKM/Whats-App-Image-2025-12-29-at-5-26-57-PM.jpg')"></div>
+        <div class="hostel-box" data-name="Tariq Hall" data-index="14" style="background-image:url('https://i.ibb.co/35gTzC8G/Whats-App-Image-2025-12-29-at-5-30-00-PM.jpg')"></div>
+
+      </div>
+      <button class="scroll-right">&gt;</button>
+    </div>
+    <!-- HOSTEL INFO BOX - ALIGNED WITH HOSTELS SECTION -->
+    <div class="hostel-info-box" id="hostelInfoBox">
+      <div class="info-header">
+        <h3 id="hostelName">Hostel Information</h3>
+        <button class="close-btn" id="closeBtn"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="info-content" id="hostelContent">
+        <p style="text-align:center; color:#0d3a80; font-size:16px; font-weight:500; margin-top:30px;">
+          Hostel info will appear here on clicking
+        </p>
+      </div>
+      <div class="info-navigation">
+        <button class="nav-btn" id="prevBtn">
+          <i class="fas fa-chevron-left"></i> Prev
+        </button>
+        <button class="nav-btn" id="nextBtn">
+          Next <i class="fas fa-chevron-right"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- RIGHT PANEL SLIDESHOW -->
+<div class="right-panel">
+  <div class="slideshow" id="slideShowContainer">
+    <img src="https://i.ibb.co/HTLKjt71/UET.jpg" alt="UET LAHORE">
+    <div class="slide-label" id="slideLabel">UET LAHORE</div>
+    <div class="slideshow-dots">
+      <span data-index="0" class="active"></span>
+      <span data-index="1"></span>
+      <span data-index="2"></span>
+    </div>
+  </div>
+</div>
+<!-- HOSTEL INFO BOX - FIXED NEXT TO HOSTELS -->
+<div class="hostel-info-box" id="hostelInfoBox">
+  <div class="info-header">
+    <h3 id="hostelName">Hostel Information</h3>
+    <button class="close-btn" id="closeBtn"><i class="fas fa-times"></i></button>
+  </div>
+  <div class="info-content" id="hostelContent">
+    <p style="text-align:center; color:#0d3a80; font-size:16px; font-weight:500; margin-top:30px;">
+      Hostel info will appear here on clicking
+    </p>
+  </div>
+  <div class="info-navigation">
+    <button class="nav-btn" id="prevBtn">
+      <i class="fas fa-chevron-left"></i> Prev
+    </button>
+    <button class="nav-btn" id="nextBtn">
+      Next <i class="fas fa-chevron-right"></i>
+    </button>
+  </div>
+</div>
+
+
+<!-- FOOTER NAV -->
+<div class="footer-nav">
+  <ul>
+    <li onclick="window.location.href='index.php'"><i class="fas fa-home"></i><span>Home</span></li>
+    <li onclick="window.location.href='about.html'"><i class="fas fa-info-circle"></i><span>About</span></li>
+    <li onclick="window.location.href='contact.html'"><i class="fas fa-phone"></i><span>Contact</span></li>
+    <li class="current" onclick="window.location.href='gallery.html'"><i class="fas fa-image"></i><span>Gallery</span></li>
+    <li onclick="window.location.href='faq.html'"><i class="fas fa-question-circle"></i><span>FAQ</span></li>
+  </ul>
+</div>
+
+
+<!-- COPYRIGHT -->
+<div class="copyright-box">
+  © 2025 HostelMate. All Rights Reserved. | 
+  <a href="privacy.html" target="_blank">Privacy Policy</a>
+</div>
+
+<script>
+  // ===== HOSTELS DATA =====
+const hostelsData = [
+  {
+    name: "C-Hall",
+    content: `
+      <p><strong>C-Hall</strong> is one of the oldest male hostels at UET Lahore, established in the early 1950s.</p>
+      <p><strong>Capacity:</strong> Approximately 180 students across shared and single rooms</p>
+      <p><strong>Facilities:</strong> Study lounges, recreational areas, dining hall, and gym</p>
+      <p>C-Hall is known for its active student community and annual cultural events, offering both comfort and a sense of camaraderie.</p>
+    `
+  },
+  {
+    name: "Umar Hall",
+    content: `
+      <p><strong>Umar Hall</strong>, a male hostel built in the 1970s, accommodates around 150 students.</p>
+      <p><strong>Rooms:</strong> Furnished with beds, study desks, and storage units</p>
+      <p><strong>Facilities:</strong> Library, sports courts, and computer lab</p>
+      <p>Umar Hall has a strong tradition of academic excellence and inter-hostel competitions.</p>
+    `
+  },{
+    name: "New Girls Hostel",
+    content: `
+      <p><strong>New Girls Hostel</strong>, inaugurated in 2018, is a modern facility for female students.</p>
+      <p><strong>Capacity:</strong> 120 rooms accommodating 2 students per room</p>
+      <p><strong>Amenities:</strong> Study desks, wardrobes, Wi-Fi access, gym, common lounges, and 24/7 security</p>
+      <p>Creates a safe and supportive environment for academic and extracurricular activities.</p>
+    `
+  },
+  {
+    name: "Bachelor Faculty Hostel",
+    content: `
+      <p><strong>Bachelor Faculty Hostel</strong> is intended for faculty members and postgraduate students.</p>
+      <p><strong>Features:</strong> Private rooms and suites with attached bathrooms, study areas, and internet connectivity</p>
+      <p><strong>Built:</strong> 1990s</p>
+      <p><strong>Facilities:</strong> Landscaped gardens, small gym, and communal dining spaces</p>
+    `
+  },
+  {
+    name: "Khadeeja Hall",
+    content: `
+    <p><strong>Khadeeja Hall</strong> is a female hostel with around 140 rooms accommodating approximately 280 students.</p>
+      <p><strong>Facilities:</strong> Study halls, indoor recreational areas, cafeteria, and well-maintained courtyard</p>
+      <p>Emphasizes discipline and community engagement through cultural and academic events.</p>
+    `
+  },
+  {
+    name: "Faculty Hostel",
+    content: `
+      <p><strong>Faculty Hostel</strong> houses faculty members and visiting professors.</p>
+      <p><strong>Built:</strong> Late 1980s</p>
+      <p><strong>Amenities:</strong> Bedroom, living space, Wi-Fi, laundry facilities, and private parking</p>
+      <p>Provides convenient access to campus departments and fosters an academic environment close to students.</p>
+    `
+  },
+  {
+    name: "Al-Zohra Hall",
+    content: `
+      <p><strong>Al-Zohra Hall</strong> is a female hostel with 100 rooms for 200 students.</p>
+      <p><strong>Rooms:</strong> Two beds, desks, and storage units</p>
+      <p><strong>Facilities:</strong> Study lounges, small gym, and indoor common area</p>
+      <p>Renovated in 2015 to improve safety, accessibility, and modern living standards.</p>
+    `
+  },
+  {
+    name: "Khalid Hall",
+    content: `
+      <p><strong>Khalid Hall</strong> is a male hostel accommodating 200 students across single and double rooms.</p>
+      <p><strong>Established:</strong> 1960s</p>
+      <p><strong>Facilities:</strong> Reading room, gym, sports courts, and canteen</p>
+      <p>Popular for its spacious rooms and strong hostel spirit, hosting events and competitions annually.</p>
+    `
+  },
+  {
+    name: "Abdul-Sattar Edhi Hall",
+    content: `
+      <p><strong>Abdul-Sattar Edhi Hall</strong>, named after the humanitarian, provides accommodation for 150 male students.</p>
+      <p><strong>Rooms:</strong> Double-occupancy rooms</p>
+      <p><strong>Facilities:</strong> Library, computer lab, recreational spaces, and cafeteria</p>
+      <p>Recognized for discipline and fostering community service activities.</p>
+    `
+  },
+  {
+    name: "Muhammad Bin Qasim Hall",
+    content: `
+    <p><strong>Muhammad Bin Qasim Hall</strong> accommodates around 180 male students with single and double rooms.</p>
+      <p><strong>Built:</strong> 1970s</p>
+      <p><strong>Facilities:</strong> Gym, indoor sports hall, study areas, and Wi-Fi access</p>
+      <p>Has a rich history of student leadership and academic excellence.</p>
+    `
+  },
+  {
+    name: "Zubair Hall",
+    content: `
+      <p><strong>Zubair Hall</strong> is a male hostel for approximately 160 students.</p>
+      <p><strong>Rooms:</strong> Two beds and study desks</p>
+      <p><strong>Facilities:</strong> Common lounge, gym, and dedicated study halls</p>
+      <p>Encourages participation in sports and cultural activities, promoting a balanced student life.</p>
+    `
+  },
+  {
+    name: "S.Mahmood Gaznavi Hall",
+    content: `
+      <p><strong>S. Mahmood Gaznavi Hall</strong> is a female hostel with 120 rooms, housing around 240 students.</p>
+      <p><strong>Established:</strong> 1990</p>
+      <p><strong>Rooms:</strong> Furnished with beds, desks, and wardrobes</p>
+      <p><strong>Facilities:</strong> Indoor recreational areas, study halls, and cafeteria. Provides a secure and collaborative living environment.</p>
+    `
+  },
+  {
+    name: "Allama Iqbal Hall",
+    content: `
+      <p><strong>Allama Iqbal Hall</strong>, a male hostel for 200 students, features modern rooms with attached bathrooms.</p>
+      <p><strong>Amenities:</strong> Study desks, Wi-Fi, gym, indoor games room, and cafeteria</p>
+      <p>Named after the national poet, known for hosting cultural events and inter-hostel competitions.</p>
+    `
+  },
+  {
+    name: "Sir Syed Hall",
+    content: `
+      <p><strong>Sir Syed Hall</strong> is a historic male hostel accommodating 180 students.</p>
+      <p><strong>Rooms:</strong> Simple yet comfortable with basic furniture</p>
+      <p><strong>Facilities:</strong> Library, sports area, and common lounges</p>
+      <p>Rich tradition of fostering leadership, academic excellence, and active campus participation.</p>
+    `
+  },
+  {
+    name: "Tariq Hall",
+    content: `
+      <p><strong>Tariq Hall</strong> houses 170 male students in shared rooms with modern furniture and study spaces.</p>
+      <p><strong>Facilities:</strong> Indoor and outdoor sports areas, gym, and study lounge</p>
+      <p>Known for a friendly environment and active student engagement in academic and recreational events.</p>
+    `
+  }
+];
+// ===== HOSTEL INFO BOX FUNCTIONALITY =====
+const infoBox = document.getElementById('hostelInfoBox');
+const hostelNameEl = document.getElementById('hostelName');
+const hostelContentEl = document.getElementById('hostelContent');
+const closeBtn = document.getElementById('closeBtn');
+const prevBtn = document.getElementById('prevBtn');
+const nextBtn = document.getElementById('nextBtn');
+const hostelBoxes = document.querySelectorAll('.hostel-box');
+
+function showHostelInfo(index) {
+  currentHostelIndex = index;
+  const hostel = hostelsData[index];
+  
+  hostelNameEl.textContent = hostel.name;
+  hostelContentEl.innerHTML = hostel.content;
+  infoBox.classList.add('active');
+  
+  // Update button states
+  prevBtn.disabled = index === 0;
+  nextBtn.disabled = index === hostelsData.length - 1;
+}
+function hideHostelInfo() {
+  infoBox.classList.remove('active');
+  currentHostelIndex = -1;
+  hostelNameEl.textContent = 'Hostel Information';
+  hostelContentEl.innerHTML = `
+    <p style="text-align:center; color:#0d3a80; font-size:16px; font-weight:500; margin-top:30px;">
+      Hostel info will appear here on clicking
+    </p>
+  `;
+}
+// Add click listeners to hostel boxes
+hostelBoxes.forEach((box, index) => {
+  box.addEventListener('click', () => {
+    showHostelInfo(index);
+  });
+});
+
+// Close button
+closeBtn.addEventListener('click', hideHostelInfo);
+
+// Navigation buttons
+prevBtn.addEventListener('click', () => {
+  if (currentHostelIndex > 0) {
+    showHostelInfo(currentHostelIndex - 1);
+  }
+});
+
+nextBtn.addEventListener('click', () => {
+  if (currentHostelIndex < hostelsData.length - 1) {
+    showHostelInfo(currentHostelIndex + 1);
+  }
+});
+// ===== HOSTELS SCROLL =====
+const row = document.querySelector('.hostels-row');
+const btnLeft = document.querySelector('.scroll-left');
+const btnRight = document.querySelector('.scroll-right');
+
+btnLeft.addEventListener('click', ()=> row.scrollBy({left:-220, behavior:'smooth'}));
+btnRight.addEventListener('click', ()=> row.scrollBy({left:220, behavior:'smooth'}));
+
+// ===== SLIDESHOW =====
+const slides = [
+  {src:'https://i.ibb.co/HTLKjt71/UET.jpg', label:'UET LAHORE'},
+  {src:'https://i.ibb.co/Mjk9Fff/uet-auditoruim.jpg', label:'UET AUDITORIUM COMPLEX'},
+  {src:'https://i.ibb.co/MkxWkGNG/Mainblock2.jpg', label:'UET MAIN BLOCK'}
+];
+let current = 0;
+const img = document.querySelector('#slideShowContainer img');
+const label = document.getElementById('slideLabel');
+const container = document.getElementById('slideShowContainer');
+const dots = document.querySelectorAll('.slideshow-dots span');
+
+function showSlide(index){
+  current = index;
+  img.src = slides[current].src;
+  label.textContent = slides[current].label;
+  dots.forEach(dot=>dot.classList.remove('active'));
+  dots[current].classList.add('active');
+}
+dots.forEach(dot=>{
+  dot.addEventListener('mouseenter',()=> showSlide(parseInt(dot.dataset.index)));
+});
+container.addEventListener('mouseenter', ()=>{
+  let next = (current+1) % slides.length;
+  showSlide(next);
+});
+setInterval(()=>{
+  let next = (current+1) % slides.length;
+  showSlide(next);
+},4000);
+
+// ===== CANVAS GRID =====
+const canvas=document.getElementById("grid");
+const ctx=canvas.getContext("2d");
+function resize(){canvas.width=window.innerWidth; canvas.height=window.innerHeight;}
+resize();
+window.addEventListener("resize",resize);
+let mouse={x:-1000,y:-1000};
+window.addEventListener("mousemove",e=>{mouse.x=e.clientX; mouse.y=e.clientY;});
+const spacing=40;
+const influence=180;
+function draw(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  for(let x=0;x<canvas.width;x+=spacing){
+    for(let y=0;y<canvas.height;y+=spacing){
+      const dx=mouse.x-x; const dy=mouse.y-y;
+      const dist=Math.sqrt(dx*dx+dy*dy);
+      if(dist<influence){
+        const alpha=1-dist/influence;
+        ctx.strokeStyle=`rgba(0,0,0,${alpha*0.35})`;
+        ctx.beginPath(); ctx.moveTo(x-spacing/2,y); ctx.lineTo(x+spacing/2,y); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(x,y-spacing/2); ctx.lineTo(x,y+spacing/2); ctx.stroke();
+      }
+    }
+  }
+  requestAnimationFrame(draw);
+}
+draw();
+</script>
+</body>
+</html>

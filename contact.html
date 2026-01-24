@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Contact - HostelMate</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Roboto:wght@400;500&display=swap');
+
+*{margin:0;padding:0;box-sizing:border-box;}
+body{
+  font-family:'Roboto',sans-serif;
+  background:#fff;
+  overflow-x:hidden;
+  padding-bottom:260px; /* SPACE FOR FOOTER */
+}
+
+canvas{position:fixed;inset:0;z-index:-1;}
+
+/* LEFT PANEL */
+.left-panel{
+  position:absolute;
+  top:8%;
+  left:5%;
+  width:45%;
+  display:flex;
+  flex-direction:column;
+  gap:16px;
+}
+
+.uni-header{display:flex;gap:16px;align-items:center;}
+.badge-small{
+  width:80px;
+  border-radius:16px;
+  box-shadow:0 6px 18px rgba(0,0,0,0.25);
+}
+
+.uni-text h1{
+  font-family:'Playfair Display',serif;
+  font-size:48px;
+  color:#0d3a80;
+  font-weight:900;
+}
+.uni-text h4{font-size:18px;font-weight:bold;}
+.uni-text p.orange{
+  font-size:12px;
+  color:orange;
+  font-weight:bold;
+}
+
+/* SMALL HEADER */
+.contact-heading{
+  font-size:20px;
+  font-weight:700;
+  color:#0d3a80;
+}
+
+/* FORM */
+.contact-form{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+  margin-bottom:180px; /* SPACE FROM FOOTER */
+}
+
+.contact-form input,
+.contact-form textarea{
+  padding:12px;
+  border-radius:14px;
+  border:1px solid #000;
+  background:rgba(255,255,255,0.15);
+  transition:0.3s;
+}
+.contact-form input:hover,
+.contact-form textarea:hover{
+  border-color:#0d6efd;
+  box-shadow:0 0 15px #0d6efd,0 0 30px rgba(0,123,255,0.3);
+}
+
+.contact-form textarea{height:120px;resize:none;}
+
+.contact-form button{
+  padding:14px;
+  border-radius:16px;
+  border:none;
+  background:linear-gradient(135deg,#0d6efd,#003f9e);
+  color:#fff;
+  font-weight:bold;
+  cursor:pointer;
+  transition:0.3s;
+}
+.contact-form button:hover{
+  transform:scale(1.05);
+  box-shadow:0 15px 40px rgba(0,123,255,0.45);
+}
+
+/* RIGHT PANEL */
+.right-panel{
+  position:absolute;
+  top:20%;
+  right:5%;
+  width:340px;
+  display:flex;
+  flex-direction:column;
+  gap:18px;
+}
+
+.info-box{
+  background:rgba(255,255,255,0.15);
+  backdrop-filter:blur(12px);
+  border:1px solid rgba(0,0,0,0.2);
+  border-radius:22px;
+  padding:18px 22px;
+  box-shadow:0 10px 30px rgba(0,0,0,0.2);
+  transition:0.3s;
+}
+.info-box:hover{
+  box-shadow:0 0 20px #0d6efd,0 0 40px rgba(13,110,253,0.5);
+  transform:scale(1.02);
+}
+
+.info-box h3{
+  font-family:'Playfair Display',serif;
+  font-size:18px;
+  margin-bottom:10px;
+}
+
+.subhead{
+  font-size:14px;
+  font-weight:700;
+  margin-top:8px;
+}
+.info-box p{
+  font-size:13px;
+  margin-left:6px;
+}
+
+/* ===== FOOTER IMPORTED FROM INDEX ===== */
+.footer-nav{
+  position:fixed;
+  bottom:20px;
+  left:5%;
+  z-index:10;
+}
+
+.footer-nav ul{
+  display:flex;
+  gap:20px;
+  list-style:none;
+}
+
+.footer-nav li{
+  position:relative;
+  padding:10px 15px;
+  background:rgba(0,0,0,0.05);
+  backdrop-filter:blur(6px);
+  border-radius:16px;
+  cursor:pointer;
+  transition:0.3s;
+}
+
+.footer-nav li:nth-child(3){
+  box-shadow:0 0 20px #0d6efd,0 0 40px #0d6efd;
+}
+
+.footer-nav li:hover{
+  box-shadow:0 0 15px #0d6efd,0 0 25px #0d6efd;
+}
+
+.footer-nav li i{
+  opacity:0;
+  position:absolute;
+  left:50%;
+  top:50%;
+  transform:translate(-50%,-50%);
+  transition:0.25s;
+}
+.footer-nav li span{transition:0.25s;}
+.footer-nav li:hover span{opacity:0;}
+.footer-nav li:hover i{opacity:1;}
+
+.copyright-box{
+  position:fixed;
+  right:5%;
+  bottom:20px;
+  width:380px;
+  padding:12px 20px;
+  border-radius:20px;
+  background:rgba(255,255,255,0.15);
+  backdrop-filter:blur(12px);
+  border:1px solid rgba(0,0,0,0.2);
+  text-align:center;
+  font-size:12px;
+  box-shadow:0 10px 30px rgba(0,123,255,0.2);
+  transition:0.3s;
+  z-index:2;
+}
+.copyright-box:hover{
+  box-shadow:0 0 20px #0d6efd,0 0 40px #0d6efd;
+  transform:scale(1.02);
+}
+.copyright-box a{
+  color:#0d6efd;
+  font-weight:bold;
+  text-decoration:none;
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="grid"></canvas>
+
+<!-- LEFT -->
+<div class="left-panel">
+  <div class="uni-header">
+    <img src="https://i.ibb.co/HL3qVtZY/uet-lahore-Logo-PNG-Vector-CDR-Free-Download.jpg" class="badge-small">
+    <div class="uni-text">
+      <h1>U E T</h1>
+      <h4>UNIVERSITY OF ENGINEERING & TECHNOLOGY, LAHORE</h4>
+      <p class="orange">
+        The Best Way to predict your future is to create it - 104 years of excellence
+      </p>
+    </div>
+  </div>
+
+  <div class="contact-heading">We’d love to hear from you</div>
+
+  <div class="contact-form">
+    <input type="text" placeholder="Your Name">
+    <input type="email" placeholder="Your Email">
+    <input type="tel" placeholder="Phone Number">
+    <input type="text" placeholder="Subject">
+    <textarea placeholder="Your Message"></textarea>
+    <button>Send Message</button>
+  </div>
+</div>
+
+<!-- RIGHT -->
+<div class="right-panel">
+
+  <div class="info-box">
+    <h3>UET Contacts</h3>
+
+    <div class="subhead">Admissions</div>
+    <p>042-99029216</p>
+    <p>042-99029452</p>
+
+    <div class="subhead">Registrar Office</div>
+    <p>042-99029227</p>
+
+    <div class="subhead">Directorate of Student Affairs (DSA)</div>
+    <p>+92 (42) 99029244</p>
+  </div>
+
+  <div class="info-box">
+    <h3>Important Emails</h3>
+    <p>info@uetlahore.edu.pk</p>
+    <p>dsa@uet.edu.pk</p>
+    <p>lms@uet.edu.pk</p>
+  </div>
+
+  <div class="info-box">
+    <h3>Social Media Profiles</h3>
+    <p>uet.xnews</p>
+  </div>
+
+</div>
+
+<!-- FOOTER (UNCHANGED) -->
+<div class="footer-nav">
+  <ul>
+    <li onclick="window.location.href='index.html'"><i class="fas fa-home"></i><span>Home</span></li>
+    <li onclick="window.location.href='about.html'"><i class="fas fa-info-circle"></i><span>About</span></li>
+    <li onclick="window.location.href='contact.html'"><i class="fas fa-phone"></i><span>Contact</span></li>
+    <li class="current" onclick="window.location.href='gallery.html'"><i class="fas fa-image"></i><span>Gallery</span></li>
+    <li onclick="window.location.href='faq.html'"><i class="fas fa-question-circle"></i><span>FAQ</span></li>
+  </ul>
+</div>
+
+<div class="copyright-box">
+  © 2025 HostelMate. All Rights Reserved. |
+  <a href="privacy.html" target="_blank">Privacy Policy</a>
+</div>
+
+<!-- ===== 2D GRID SCRIPT FROM PORTAL ===== -->
+<script>
+const canvas=document.getElementById("grid");
+const ctx=canvas.getContext("2d");
+
+function resize(){
+  canvas.width=window.innerWidth;
+  canvas.height=window.innerHeight;
+}
+resize();
+window.addEventListener("resize",resize);
+
+let mouse={x:-1000,y:-1000};
+window.addEventListener("mousemove",e=>{
+  mouse.x=e.clientX;
+  mouse.y=e.clientY;
+});
+
+const spacing=40;
+const influence=180;
+
+function draw(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+
+  for(let x=0;x<canvas.width;x+=spacing){
+    for(let y=0;y<canvas.height;y+=spacing){
+      const dx=mouse.x-x;
+      const dy=mouse.y-y;
+      const dist=Math.sqrt(dx*dx+dy*dy);
+
+      if(dist<influence){
+        const alpha=1-dist/influence;
+        ctx.strokeStyle=`rgba(0,0,0,${alpha*0.35})`;
+
+        ctx.beginPath();
+        ctx.moveTo(x-spacing/2,y);
+        ctx.lineTo(x+spacing/2,y);
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.moveTo(x,y-spacing/2);
+        ctx.lineTo(x,y+spacing/2);
+        ctx.stroke();
+      }
+    }
+  }
+  requestAnimationFrame(draw);
+}
+draw();
+</script>
+
+</body>
+</html>

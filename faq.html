@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>FAQ - HostelMate</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Roboto:wght@400;500&display=swap');
+
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Roboto',sans-serif;background:#fff;overflow-x:hidden;padding-bottom:200px;}
+canvas{position:fixed;inset:0;z-index:-1;}
+
+/* HEADER LEFT */
+.uni-header{
+  display:flex;
+  align-items:center;
+  gap:16px;
+  padding:20px 5%;
+}
+
+.badge-small{width:80px;border-radius:16px;}
+
+.uni-text h1{font-family:'Playfair Display',serif;font-size:48px;color:#0d3a80;font-weight:900;}
+.uni-text h4,.uni-text p{color:#0d3a80;}
+.uni-text p.italic{font-style:italic;font-size:14px;}
+.uni-text p.orange{font-size:12px;color:orange;font-weight:bold;}
+
+/* SEARCH BAR CENTERED ANIMATED */
+.search-container{
+  display:flex;
+  justify-content:center;
+  margin:20px 0;
+}
+
+.search-circle{
+  width:50px;
+  height:50px;
+  background:#0d3a80;
+  border-radius:50%;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  color:#fff;
+  cursor:pointer;
+  transition:0.4s;
+  position:relative;
+  overflow:hidden;
+}
+
+.search-circle:hover{
+  width:400px;
+  border-radius:25px;
+  box-shadow:0 0 15px #0d3a80,0 0 25px #0d3a80;
+}
+
+.search-circle input{
+  width:0;
+  padding:0;
+  border:none;
+  outline:none;
+  background:transparent;
+  color:#fff;
+  font-size:16px;
+  margin-left:10px;
+  transition:0.4s;
+}
+
+.search-circle:hover input{
+  width:300px;
+  padding:8px 0;
+}
+
+.search-circle button{
+  position:absolute;
+  right:10px;
+  padding:8px 16px;
+  border:none;
+  border-radius:16px;
+  background:linear-gradient(135deg,#0d3a80,#003f9e);
+  color:#fff;
+  font-weight:bold;
+  cursor:pointer;
+  opacity:0;
+  transition:0.4s, transform 0.3s;
+}
+
+.search-circle:hover button{
+  opacity:1;
+  transform:scale(1.05);
+}
+
+/* FAQ */
+.faq-section{
+  margin:20px 5%;
+}
+
+.faq-section h2{
+  font-family:'Playfair Display',serif;
+  font-size:28px;
+  margin-bottom:10px;
+  color:#0d3a80;
+}
+
+.faq-item{
+  border:1px solid #0d3a80;
+  border-radius:12px;
+  margin-bottom:12px;
+  overflow:hidden;
+}
+
+.faq-item button{
+  width:100%;
+  text-align:left;
+  padding:14px 20px;
+  font-size:16px;
+  background:#0d3a80;
+  color:#fff;
+  border:none;
+  cursor:pointer;
+  outline:none;
+  transition:0.3s;
+}
+
+.faq-item button:hover{
+  box-shadow:0 0 15px #0d3a80,0 0 25px #0d3a80;
+}
+
+.faq-item .answer{
+  max-height:0;
+  padding:0 20px;
+  background:rgba(13,58,128,0.05);
+  overflow:hidden;
+  transition:max-height 0.3s ease,padding 0.3s ease;
+}
+
+.faq-item.active .answer{
+  max-height:200px;
+  padding:10px 20px;
+}
+
+/* FOOTER NAV & COPYRIGHT (index.html style) */
+.footer-nav{
+  position:fixed;
+  bottom:20px;
+  left:20px;
+  z-index:10;
+  opacity:0;
+  transition:0.4s;
+}
+
+.footer-nav ul{
+  display:flex;
+  gap:20px;
+  list-style:none;
+}
+
+.footer-nav li{
+  position:relative;
+  padding:10px 15px;
+  background:rgba(0,0,0,0.05);
+  backdrop-filter:blur(6px);
+  border-radius:16px;
+  cursor:pointer;
+  transition:0.3s;
+}
+
+/* Glow effect only on FAQ tab, light blue like index.html */
+.footer-nav li:last-child{
+  box-shadow:0 0 20px #0d6efd,0 0 40px #0d6efd;
+}
+
+.footer-nav li:hover{
+  box-shadow:0 0 15px #0d6efd,0 0 25px #0d6efd;
+}
+
+.footer-nav li i{
+  opacity:0;
+  position:absolute;
+  left:50%;
+  top:50%;
+  transform:translate(-50%,-50%);
+  transition:0.25s;
+}
+
+.footer-nav li span{transition:0.25s;}
+.footer-nav li:hover span{opacity:0;}
+.footer-nav li:hover i{opacity:1;}
+
+/* COPYRIGHT & PRIVACY */
+.copyright-box{
+  position:fixed;
+  bottom:20px;
+  right:20px;
+  width:380px;
+  padding:12px 20px;
+  border-radius:20px;
+  background:rgba(255,255,255,0.15);
+  backdrop-filter:blur(12px);
+  border:1px solid rgba(0,0,0,0.2);
+  text-align:center;
+  font-size:12px;
+  color:#0d3a80;
+  box-shadow:0 10px 30px rgba(0,123,255,0.2);
+  transition:0.3s;
+  opacity:0;
+}
+
+.copyright-box:hover{
+  box-shadow:0 0 20px #0d6efd,0 0 40px #0d6efd;
+  transform:scale(1.02);
+}
+
+.copyright-box a{
+  color:#0d3a80;
+  text-decoration:none;
+  font-weight:bold;
+}
+</style>
+</head>
+<body>
+
+<canvas id="grid"></canvas>
+
+<!-- HEADER LEFT -->
+<div class="uni-header">
+  <img src="https://i.ibb.co/HL3qVtZY/uet-lahore-Logo-PNG-Vector-CDR-Free-Download.jpg" class="badge-small">
+  <div class="uni-text">
+    <h1>U E T</h1>
+    <h4>UNIVERSITY OF ENGINEERING & TECHNOLOGY, LAHORE</h4>
+    <p class="italic">Read in the name of thy Lord who creates!</p>
+    <p class="orange">The Best Way to predict your future is to create it - 104 years of excellence</p>
+  </div>
+</div>
+
+<!-- SEARCH BAR CENTERED -->
+<div class="search-container">
+  <div class="search-circle">
+    <i class="fas fa-search"></i>
+    <input type="text" placeholder="Search FAQs...">
+    <button>Search</button>
+  </div>
+</div>
+
+<!-- FAQ SECTIONS -->
+<div class="faq-section">
+  <h2>General Questions</h2>
+  <div class="faq-item">
+    <button>How do I register on HostelMate?</button>
+    <div class="answer"><p>Click on the 'Register Here' button on the home page and fill in your details.</p></div>
+  </div>
+  <div class="faq-item">
+    <button>Who can access HostelMate?</button>
+    <div class="answer"><p>All registered students of UET can access HostelMate features.</p></div>
+  </div>
+</div>
+
+<div class="faq-section">
+  <h2>Hostel Information</h2>
+  <div class="faq-item">
+    <button>How can I find hostel details?</button>
+    <div class="answer"><p>All hostels are listed under the 'Hostels' section with images and contact info.</p></div>
+  </div>
+  <div class="faq-item">
+    <button>Can I update my hostel info?</button>
+    <div class="answer"><p>Yes, after login you can update your hostel profile under the 'My Hostel' tab.</p></div>
+  </div>
+</div>
+
+<div class="faq-section">
+  <h2>Account Queries</h2>
+  <div class="faq-item">
+    <button>How do I reset my password?</button>
+    <div class="answer"><p>Use the 'Forgot Password' link on the login card to reset your password via email.</p></div>
+  </div>
+</div>
+
+<div class="faq-section">
+  <h2>Technical Support</h2>
+  <div class="faq-item">
+    <button>Who can I contact for help?</button>
+    <div class="answer"><p>You can reach out via the 'Contact' page for any technical assistance.</p></div>
+  </div>
+  <div class="faq-item">
+    <button>How to report bugs?</button>
+    <div class="answer"><p>Report bugs using the feedback form under 'Contact'.</p></div>
+  </div>
+</div>
+
+<!-- FOOTER NAV -->
+<div class="footer-nav">
+  <ul>
+    <li onclick="window.location.href='index.html'"><i class="fas fa-home"></i><span>Home</span></li>
+    <li onclick="window.location.href='about.html'"><i class="fas fa-info-circle"></i><span>About</span></li>
+    <li onclick="window.location.href='contact.html'"><i class="fas fa-phone"></i><span>Contact</span></li>
+    <li class="current" onclick="window.location.href='gallery.html'"><i class="fas fa-image"></i><span>Gallery</span></li>
+    <li onclick="window.location.href='faq.html'"><i class="fas fa-question-circle"></i><span>FAQ</span></li>
+  </ul>
+</div>
+
+
+<!-- COPYRIGHT -->
+<div class="copyright-box">
+  © 2025 HostelMate. All Rights Reserved. | 
+  <a href="privacy.html" target="_blank">Privacy Policy</a>
+</div>
+
+<script>
+// FAQ toggle
+document.querySelectorAll('.faq-item button').forEach(btn=>{
+  btn.addEventListener('click',()=> btn.parentElement.classList.toggle('active'));
+});
+
+// Show footer and copyright only after scrolling
+window.addEventListener('scroll',()=>{
+  const scrollBottom = window.innerHeight + window.scrollY;
+  const pageHeight = document.body.offsetHeight - 200;
+  const footer = document.querySelector('.footer-nav');
+  const copy = document.querySelector('.copyright-box');
+  if(scrollBottom >= pageHeight){
+    footer.style.opacity='1';
+    copy.style.opacity='1';
+  } else{
+    footer.style.opacity='0';
+    copy.style.opacity='0';
+  }
+});
+
+// Canvas grid
+const canvas=document.getElementById("grid");
+const ctx=canvas.getContext("2d");
+function resize(){canvas.width=window.innerWidth;canvas.height=window.innerHeight;}
+resize();
+window.addEventListener("resize",resize);
+let mouse={x:-1000,y:-1000};
+window.addEventListener("mousemove",e=>{mouse.x=e.clientX;mouse.y=e.clientY;});
+const spacing=40, influence=180;
+function draw(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  for(let x=0;x<canvas.width;x+=spacing){
+    for(let y=0;y<canvas.height;y+=spacing){
+      const dx=mouse.x-x, dy=mouse.y-y, dist=Math.sqrt(dx*dx+dy*dy);
+      if(dist<influence){
+        const alpha=1-dist/influence;
+        ctx.strokeStyle=`rgba(0,0,0,${alpha*0.35})`;
+        ctx.beginPath(); ctx.moveTo(x-spacing/2,y); ctx.lineTo(x+spacing/2,y); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(x,y-spacing/2); ctx.lineTo(x,y+spacing/2); ctx.stroke();
+      }
+    }
+  }
+  requestAnimationFrame(draw);
+}
+draw();
+</script>
+
+</body>
+</html>
