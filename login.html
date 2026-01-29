@@ -288,7 +288,7 @@ table tr:hover {
     <button onclick="updateProfile()">Update Photo</button>
     <button class="remove-btn" onclick="removeProfile()">Remove Photo</button>
     <button class="back-btn" onclick="closeProfileModal()">Back</button>
-    <input type="file" id="fileInput" style="display:none;" accept="image/*">
+    <input type="file" id="fileInput" style="display:none;" accept="uploads/*">
   </div>
 </div>
 
@@ -308,7 +308,7 @@ function typeWriter(text, elementId, speed=100){
 document.addEventListener("DOMContentLoaded",()=>{ typeWriter(`Welcome ${name}!`,"mainWelcome",100); });
 
 // Logout
-function logout(){ localStorage.removeItem("studentName"); window.location.href = "index.html"; }
+function logout(){ localStorage.removeItem("studentName"); window.location.href = "index.php"; }
 
 // Profile modal
 function openProfileModal(){ document.getElementById("profileModal").style.display="flex"; document.getElementById("modalProfileImg").src=document.getElementById("profileImg").src; }

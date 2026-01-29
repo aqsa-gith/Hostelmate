@@ -314,7 +314,7 @@ button:hover{
     <p>Because we care for your comfort</p>
 
     <button class="register-btn" onclick="window.location.href='register.php'">Register Here</button>
-    <button class="register-btn" onclick="window.location.href='admin-register.html'">Admin Registration</button>
+    <button class="register-btn" onclick="window.location.href='admin-register.php'">Admin Registration</button>
 
     <div class="image-links">
       <a href="https://ibb.co/fGZYXWjx" class="building-box">
@@ -387,14 +387,25 @@ function loginStudent(){
   window.location.href = "login.html";
 }
 
-function loginAdmin(){
+function loginAdmin() {
   const name = document.getElementById('adminNameInput').value || "Admin";
-  const code = document.getElementById('adminCodeInput').value || "";
+  const code = document.getElementById('adminCodeInput').value || "N/A";
+  const staffId = document.getElementById('adminIdInput').value;
+  const password = document.getElementById('adminPasswordInput').value;
+
+  if (!staffId || !password) {
+    alert("Please enter Staff ID and Password");
+    return;
+  }
+
+  // Store data for the HTML dashboard to read
   localStorage.setItem("adminName", name);
   localStorage.setItem("adminCode", code);
-  window.location.href = "admin-dashboard.html"; // redirect to admin dashboard
-}
+  localStorage.setItem("adminStaffId", staffId);
 
+  // FIX: Change .php to .html
+  window.location.href = "admin-dashboard.html"; 
+}
 function showAdminLogin(){
   const studentCard = document.getElementById('studentLogin');
   const adminCard = document.getElementById('adminLogin');
