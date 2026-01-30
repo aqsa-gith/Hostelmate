@@ -44,7 +44,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (mysqli_query($conn, $sql)) {
         echo "<script>alert('Success!'); window.location.href='index.php';</script>";
     } else {
-        // THIS WILL TELL YOU EXACTLY WHAT IS WRONG
+        
         echo "<h1>Database Error</h1>";
         echo "Error details: " . mysqli_error($conn);
     }

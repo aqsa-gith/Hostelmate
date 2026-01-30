@@ -403,7 +403,7 @@ function loginAdmin() {
   localStorage.setItem("adminCode", code);
   localStorage.setItem("adminStaffId", staffId);
 
-  // FIX: Change .php to .html
+  
   window.location.href = "admin-dashboard.html"; 
 }
 function showAdminLogin(){

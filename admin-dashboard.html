@@ -1,279 +1,556 @@
-
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Admin Dashboard - HostelMate</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - HostelMate</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
 
-body { margin:0; font-family:'Inter', sans-serif; background:#0b1e3c; color:#fff; }
+        body {
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            background: #0b1e3c;
+            color: #fff;
+        }
 
-/* Updated Sidebar CSS for visibility */
-.sidebar {
-    position: fixed;
-    top:0; left:0;
-    width:250px;
-    height:100vh; /* Ensures full height */
-    background: rgba(10,25,50,0.95);
-    backdrop-filter: blur(10px);
-    display:flex;
-    flex-direction:column;
-    box-shadow: 5px 0 15px rgba(0,0,0,0.3);
-    z-index: 1000;
-}
-.sidebar h2{ text-align:center;padding:20px 0;border-bottom:1px solid rgba(255,255,255,0.2);margin:0;}
-.sidebar ul {
-    list-style:none;
-    padding:0;
-    margin:0;
-    flex:1;
-    overflow-y: auto; /* Allows menu to scroll if list is too long */
-}
-.sidebar ul li{
-    padding:15px 20px;
-    cursor:pointer;
-    border-bottom:1px solid rgba(255,255,255,0.1);
-    display:flex;
-    align-items:center;
-    gap:10px;
-    transition:0.3s;
-    border-radius:10px 0 0 10px;
-}
-.sidebar ul li:hover{background: rgba(255,255,255,0.1); box-shadow:0 0 10px #0ff;}
-/* Fixed Logout styling to ensure it shows at the bottom */
-.sidebar ul li.logout {
-    margin: 20px; /* Space around the button */
-    background: linear-gradient(135deg, #ff758c, #ff7eb3);
-    justify-content:center;
-    border-radius:25px;
-    padding:12px 0;
-    font-weight:bold;
-    color: #fff;
-    cursor: pointer;
-    list-style-type: none; /* Removes bullet if any */
-}
-.sidebar ul li.logout:hover {
-    background: linear-gradient(135deg, #ff7eb3, #ff758c);
-    box-shadow: 0 0 15px #ff7eb3, 0 0 25px #ff758c;
-    transform: translateY(-2px);
-}
-.sidebar ul li .badge{
-    background:red;color:#000;border-radius:50%;width:20px;height:20px;text-align:center;line-height:20px;font-size:12px;
-}
+        /*  Sidebar CSS for visibility */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 250px;
+            height: 100vh;
+            background: rgba(10, 25, 50, 0.95);
+            backdrop-filter: blur(10px);
+            display: flex;
+            flex-direction: column;
+            box-shadow: 5px 0 15px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+        }
 
-/* Main content */
-.main-content{ margin-left:250px; padding:20px; }
+        .sidebar h2 {
+            text-align: center;
+            padding: 20px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            margin: 0;
+        }
 
-/* Header */
-.header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;}
-.header .logo { height:70px; border-radius: 12px; box-shadow: 0 0 15px #0ff; transition: 0.3s; }
-.header h1{margin-left:20px;font-size:24px;color:#0ff;}
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            flex: 1;
+            overflow-y: auto;
+            
+        }
 
-/* Profile pic edit */
-.profile-section{position:relative;}
-.profile-pic-wrapper{position:relative;display:inline-block;}
-.profile-pic{width:60px;height:60px;border-radius:50%;object-fit:cover;border:2px solid #0ff;transition:0.3s;}
-.profile-pic:hover{box-shadow:0 0 15px #0ff;}
-.edit-pen{position:absolute;bottom:-5px;right:-5px;background:#0ff;color:#000;border-radius:50%;padding:5px;cursor:pointer;font-size:12px;border:1px solid #fff;}
+        .sidebar ul li {
+            padding: 15px 20px;
+            cursor: pointer;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: 0.3s;
+            border-radius: 10px 0 0 10px;
+        }
 
-/* Profile Modal */
-#profileModal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);backdrop-filter: blur(5px);justify-content:center;align-items:center;z-index:1000;}
-#profileModal .modal-content{
-    background: rgba(255,255,255,0.1);
-    backdrop-filter: blur(15px);
-    padding:30px;
-    border-radius:20px;
-    text-align:center;
-    box-shadow:0 0 20px #0ff;
-}
-#profileModal img{width:120px;height:120px;border-radius:50%;object-fit:cover;margin-bottom:20px;border:3px solid #0ff;}
+        .sidebar ul li:hover {
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 10px #0ff;
+        }
 
-/* Cards */
-.dashboard-cards{display:flex;gap:20px;flex-wrap:wrap;margin-bottom:20px;}
-.card{
-    background: rgba(255,255,255,0.1);
-    backdrop-filter: blur(10px);
-    flex:1 1 200px;
-    padding:20px;
-    border-radius:15px;
-    box-shadow:0 4px 15px rgba(0,255,255,0.2);
-    transition:0.3s;
-    cursor:pointer;
-    position:relative;
-}
-.card:hover{box-shadow:0 0 25px #0ff;}
-.card h3{margin:0;font-size:14px;color:#c0eaff;}
-.card p{font-size:24px;margin:5px 0 0 0;font-weight:700;}
-.card .edit-card{ position:absolute; top:10px; right:10px; font-size:16px; cursor:pointer; color:#0ff; padding:5px; border-radius:50%; border:1px solid #0ff; transition:0.3s; }
-.card .edit-card:hover{ box-shadow:0 0 10px #0ff,0 0 20px #0ff; transform: translateY(-2px); }
+        .sidebar ul li.logout {
+            margin: 20px;
+            background: linear-gradient(135deg, #ff758c, #ff7eb3);
+            justify-content: center;
+            border-radius: 25px;
+            padding: 12px 0;
+            font-weight: bold;
+            color: #fff;
+            cursor: pointer;
+            list-style-type: none;
+        }
 
-/* Tables */
-table{width:100%;border-collapse:collapse;background:rgba(255,255,255,0.1);border-radius:15px;overflow:hidden;backdrop-filter:blur(5px);margin-top:20px;}
-table th, table td{padding:12px;text-align:left;border-bottom:1px solid rgba(255,255,255,0.2);color:#c0eaff;}
-table th{background:rgba(255,255,255,0.05);}
-table tr:hover{background: rgba(0,255,255,0.1);}
+        .sidebar ul li.logout:hover {
+            background: linear-gradient(135deg, #ff7eb3, #ff758c);
+            box-shadow: 0 0 15px #ff7eb3, 0 0 25px #ff758c;
+            transform: translateY(-2px);
+        }
 
-/* Tabs */
-.tab{display:none;}
-.tab.active{display:block;}
+        .sidebar ul li .badge {
+            background: red;
+            color: #000;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            text-align: center;
+            line-height: 20px;
+            font-size: 12px;
+        }
 
-/* Floating add button */
-.add-student-btn{
-    position: fixed;
-    bottom:30px;
-    right:40px;
-    width:60px;height:60px;border-radius:50%;
-    background: rgba(255,255,255,0.1);
-    backdrop-filter: blur(10px);
-    color: #0ff;
-    font-size:30px;
-    text-align:center;
-    line-height:60px;
-    cursor:pointer;
-    box-shadow:0 0 10px #0ff;
-    transition:0.3s;
-}
-.add-student-btn:hover{
-    box-shadow:0 0 20px #0ff,0 0 40px #0ff;
-    transform: translateY(-2px);
-}
+        /* Main content */
+        .main-content {
+            margin-left: 250px;
+            padding: 20px;
+        }
 
-/* Message box for lost & found */
-.lost-box{margin-top:10px;padding:10px;background:rgba(0,255,255,0.1);border-radius:10px;display:flex;justify-content:space-between;align-items:center;}
-.lost-box button{padding:5px 10px;border-radius:12px;border:none;background: rgba(255,255,255,0.1);backdrop-filter: blur(10px);color:#0ff;font-weight:600;transition:0.3s;cursor:pointer;box-shadow:0 0 5px rgba(0,255,255,0.3);}
-.lost-box button:hover{background: rgba(0,255,255,0.2);color:#000;box-shadow:0 0 15px #0ff,0 0 25px #0ff;transform:translateY(-2px);}
+        /* Header */
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
 
-/* General buttons (glassmorphism) */
-button{ padding: 8px 16px; border: none; border-radius: 12px; cursor: pointer; background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); color: #0ff; font-weight: 600; transition: all 0.3s ease; box-shadow: 0 0 5px rgba(0, 255, 255, 0.3);}
-button:hover{ background: rgba(0, 255, 255, 0.2); color: #000; box-shadow: 0 0 15px #0ff, 0 0 25px #0ff; transform: translateY(-2px);}
-input[type=text], textarea{ padding:5px; border-radius:12px; border:none; background: rgba(255,255,255,0.1); color:#0ff; backdrop-filter:blur(10px); outline:none; width:70%;}
+        .header .logo {
+            height: 70px;
+            border-radius: 12px;
+            box-shadow: 0 0 15px #0ff;
+            transition: 0.3s;
+        }
 
-/* Mess Schedule Table */
-#messTable th, #messTable td{padding:10px;border-bottom:1px solid rgba(255,255,255,0.2);color:#c0eaff;}
-#messTable th{background:rgba(255,255,255,0.05);}
-.add-row-btn{margin-top:10px;}
+        .header h1 {
+            margin-left: 20px;
+            font-size: 24px;
+            color: #0ff;
+        }
 
-/* Student Allotment Table */
-#allotmentTable th, #allotmentTable td{
-    padding:12px;text-align:left;border-bottom:1px solid rgba(255,255,255,0.2);color:#c0eaff;
-}
-#allotmentTable th{background:rgba(255,255,255,0.05);}
-#allotmentTable tr:hover{background: rgba(0,255,255,0.1);}
-.send-email-btn{padding:5px 12px;border-radius:12px;background: rgba(255,255,255,0.1);backdrop-filter:blur(10px);color:#0ff;cursor:pointer;transition:0.3s;}
-.send-email-btn:hover{background: rgba(0,255,255,0.2);color:#000;}
+        /* Profile pic edit */
+        .profile-section {
+            position: relative;
+        }
 
-/* Room selection modal */
-#roomModal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);backdrop-filter: blur(5px);justify-content:center;align-items:center;z-index:1000;}
-#roomModal .modal-content{
-    background: rgba(255,255,255,0.1);
-    backdrop-filter: blur(15px);
-    padding:30px;
-    border-radius:20px;
-    text-align:center;
-    box-shadow:0 0 20px #0ff;
-}
-#roomModal select{padding:10px;border-radius:12px;border:none;background: rgba(255,255,255,0.1);color:#0ff;outline:none;}
-#roomModal button{margin-top:10px;}
+        .profile-pic-wrapper {
+            position: relative;
+            display: inline-block;
+        }
 
+        .profile-pic {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #0ff;
+            transition: 0.3s;
+        }
 
-</style>
+        .profile-pic:hover {
+            box-shadow: 0 0 15px #0ff;
+        }
+
+        .edit-pen {
+            position: absolute;
+            bottom: -5px;
+            right: -5px;
+            background: #0ff;
+            color: #000;
+            border-radius: 50%;
+            padding: 5px;
+            cursor: pointer;
+            font-size: 12px;
+            border: 1px solid #fff;
+        }
+
+        /* Profile Modal */
+        #profileModal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(5px);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        #profileModal .modal-content {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 0 20px #0ff;
+        }
+
+        #profileModal img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 20px;
+            border: 3px solid #0ff;
+        }
+
+        /* Cards */
+        .dashboard-cards {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            flex: 1 1 200px;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 255, 255, 0.2);
+            transition: 0.3s;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .card:hover {
+            box-shadow: 0 0 25px #0ff;
+        }
+
+        .card h3 {
+            margin: 0;
+            font-size: 14px;
+            color: #c0eaff;
+        }
+
+        .card p {
+            font-size: 24px;
+            margin: 5px 0 0 0;
+            font-weight: 700;
+        }
+
+        .card .edit-card {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            color: #0ff;
+            padding: 5px;
+            border-radius: 50%;
+            border: 1px solid #0ff;
+            transition: 0.3s;
+        }
+
+        .card .edit-card:hover {
+            box-shadow: 0 0 10px #0ff, 0 0 20px #0ff;
+            transform: translateY(-2px);
+        }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            overflow: hidden;
+            backdrop-filter: blur(5px);
+            margin-top: 20px;
+        }
+
+        table th,
+        table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            color: #c0eaff;
+        }
+
+        table th {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        table tr:hover {
+            background: rgba(0, 255, 255, 0.1);
+        }
+
+        /* Tabs */
+        .tab {
+            display: none;
+        }
+
+        .tab.active {
+            display: block;
+        }
+
+        /* Floating add button */
+        .add-student-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 40px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            color: #0ff;
+            font-size: 30px;
+            text-align: center;
+            line-height: 60px;
+            cursor: pointer;
+            box-shadow: 0 0 10px #0ff;
+            transition: 0.3s;
+        }
+
+        .add-student-btn:hover {
+            box-shadow: 0 0 20px #0ff, 0 0 40px #0ff;
+            transform: translateY(-2px);
+        }
+
+        /* Message box for lost & found */
+        .lost-box {
+            margin-top: 10px;
+            padding: 10px;
+            background: rgba(0, 255, 255, 0.1);
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .lost-box button {
+            padding: 5px 10px;
+            border-radius: 12px;
+            border: none;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            color: #0ff;
+            font-weight: 600;
+            transition: 0.3s;
+            cursor: pointer;
+            box-shadow: 0 0 5px rgba(0, 255, 255, 0.3);
+        }
+
+        .lost-box button:hover {
+            background: rgba(0, 255, 255, 0.2);
+            color: #000;
+            box-shadow: 0 0 15px #0ff, 0 0 25px #0ff;
+            transform: translateY(-2px);
+        }
+
+        /* General buttons (glassmorphism) */
+        button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            color: #0ff;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 5px rgba(0, 255, 255, 0.3);
+        }
+
+        button:hover {
+            background: rgba(0, 255, 255, 0.2);
+            color: #000;
+            box-shadow: 0 0 15px #0ff, 0 0 25px #0ff;
+            transform: translateY(-2px);
+        }
+
+        input[type=text],
+        textarea {
+            padding: 5px;
+            border-radius: 12px;
+            border: none;
+            background: rgba(255, 255, 255, 0.1);
+            color: #0ff;
+            backdrop-filter: blur(10px);
+            outline: none;
+            width: 70%;
+        }
+
+        /* Mess Schedule Table */
+        #messTable th,
+        #messTable td {
+            padding: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            color: #c0eaff;
+        }
+
+        #messTable th {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .add-row-btn {
+            margin-top: 10px;
+        }
+
+        /* Student Allotment Table */
+        #allotmentTable th,
+        #allotmentTable td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            color: #c0eaff;
+        }
+
+        #allotmentTable th {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        #allotmentTable tr:hover {
+            background: rgba(0, 255, 255, 0.1);
+        }
+
+        .send-email-btn {
+            padding: 5px 12px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            color: #0ff;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .send-email-btn:hover {
+            background: rgba(0, 255, 255, 0.2);
+            color: #000;
+        }
+
+        /* Room selection modal */
+        #roomModal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(5px);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        #roomModal .modal-content {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 0 20px #0ff;
+        }
+
+        #roomModal select {
+            padding: 10px;
+            border-radius: 12px;
+            border: none;
+            background: rgba(255, 255, 255, 0.1);
+            color: #0ff;
+            outline: none;
+        }
+
+        #roomModal button {
+            margin-top: 10px;
+        }
+    </style>
 </head>
+
 <body>
 
-<div class="sidebar">
-    <h2>Admin Panel</h2>
-    <ul>
-        <li onclick="openTab('dashboard')"><i class="fas fa-tachometer-alt"></i> Dashboard</li>
-        <li onclick="openTab('students')"><i class="fas fa-user-graduate"></i> Student Management</li>
-        <li onclick="openTab('allotment')"><i class="fas fa-layer-group"></i> Student Allotment</li>
-        <li onclick="openTab('rooms')"><i class="fas fa-bed"></i> Room Management</li>
-        <li onclick="openTab('lostfound')"><i class="fas fa-search"></i> Lost & Found <span class="badge" id="lostBadge">0</span></li>
-        <li onclick="openTab('complaints')"><i class="fas fa-exclamation-circle"></i> Complaints <span class="badge" id="complaintBadge">0</span></li>
-        <li onclick="openTab('notifications')"><i class="fas fa-bell"></i> Announcements</li>
-        <li onclick="openTab('mess')"><i class="fas fa-utensils"></i> Hostel Mess Schedule</li>
-        <li onclick="openTab('events')"><i class="fas fa-calendar-alt"></i> Hostel Events</li>
-        <li class="logout" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</li>
-    </ul>
-</div>
+    <div class="sidebar">
+        <h2>Admin Panel</h2>
+        <ul>
+            <li onclick="openTab('dashboard')"><i class="fas fa-tachometer-alt"></i> Dashboard</li>
+            <li onclick="openTab('students')"><i class="fas fa-user-graduate"></i> Student Management</li>
+            <li onclick="openTab('allotment')"><i class="fas fa-layer-group"></i> Student Allotment</li>
+            <li onclick="openTab('rooms')"><i class="fas fa-bed"></i> Room Management</li>
+            <li onclick="openTab('lostfound')"><i class="fas fa-search"></i> Lost & Found <span class="badge"
+                    id="lostBadge">0</span></li>
+            <li onclick="openTab('complaints')"><i class="fas fa-exclamation-circle"></i> Complaints <span class="badge"
+                    id="complaintBadge">0</span></li>
+            <li onclick="openTab('notifications')"><i class="fas fa-bell"></i> Announcements</li>
+            <li onclick="openTab('mess')"><i class="fas fa-utensils"></i> Hostel Mess Schedule</li>
+            <li onclick="openTab('events')"><i class="fas fa-calendar-alt"></i> Hostel Events</li>
+            <li class="logout" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</li>
+        </ul>
+    </div>
 
-<div class="main-content">
-    <div class="header">
-        <div style="display:flex;align-items:center">
-            <img src="https://i.ibb.co/LDWnBVWf/59e47443259fadca4151fd6273ac0ebd.jpg" class="logo" style="width:50px; margin-right:15px;">
-            <h1 id="welcomeText"></h1> 
-        </div>
-        <div class="profile-section">
-            <div class="profile-pic-wrapper">
-                <img src="https://i.ibb.co/rGv71T90/3cae079ca0b9e55ec6bfc1b358c9b1e2.jpg" class="profile-pic" id="profilePic">
-                <i class="fas fa-pen edit-pen" id="editPen"></i>
+    <div class="main-content">
+        <div class="header">
+            <div style="display:flex;align-items:center">
+                <img src="https://i.ibb.co/LDWnBVWf/59e47443259fadca4151fd6273ac0ebd.jpg" class="logo"
+                    style="width:50px; margin-right:15px;">
+                <h1 id="welcomeText"></h1>
             </div>
-            <input type="file" id="uploadPic" style="display:none;">
+            <div class="profile-section">
+                <div class="profile-pic-wrapper">
+                    <img src="https://i.ibb.co/rGv71T90/3cae079ca0b9e55ec6bfc1b358c9b1e2.jpg" class="profile-pic"
+                        id="profilePic">
+                    <i class="fas fa-pen edit-pen" id="editPen"></i>
+                </div>
+                <input type="file" id="uploadPic" style="display:none;">
+            </div>
+        </div>
+
+        <div id="dashboard" class="tab active">
+            <h2 id="yourHallName">Your Hall: Loading...</h2>
+
+            <div class="dashboard-cards">
+                <div class="card">
+                    <h3>Total Students</h3>
+                    <p id="totalStudents">120</p>
+                </div>
+                <div class="card">
+                    <h3>Total Rooms</h3>
+                    <p id="totalRooms">50</p>
+                </div>
+                <div class="card">
+                    <h3>Free Rooms</h3>
+                    <p id="freeRooms">10</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="students" class="tab">
+            <h2>Student Management</h2>
         </div>
     </div>
 
-    <div id="dashboard" class="tab active">
-        <h2 id="yourHallName">Your Hall: Loading...</h2>
-        
-        <div class="dashboard-cards">
-            <div class="card">
-                <h3>Total Students</h3>
-                <p id="totalStudents">120</p>
-            </div>
-            <div class="card">
-                <h3>Total Rooms</h3>
-                <p id="totalRooms">50</p>
-            </div>
-            <div class="card">
-                <h3>Free Rooms</h3>
-                <p id="freeRooms">10</p>
-            </div>
-        </div>
-    </div>
+    <script>
+        // 1. Get data from LocalStorage (passed from index.php)
+        const adminName = localStorage.getItem("adminName") || "Admin";
+        const adminCode = localStorage.getItem("adminCode") || "N/A";
 
-    <div id="students" class="tab">
-        <h2>Student Management</h2>
-        </div>
-</div>
+        // 2. Dynamic Welcome Message (Typewriter)
+        let welcomeText = "WELCOME " + adminName.toUpperCase() + "!";
+        let i = 0;
+        function typeWriter() {
+            if (i < welcomeText.length) {
+                document.getElementById("welcomeText").innerHTML += welcomeText.charAt(i);
+                i++;
+                setTimeout(typeWriter, 100);
+            }
+        }
 
-<script>
-// 1. Get data from LocalStorage (passed from index.php)
-const adminName = localStorage.getItem("adminName") || "Admin";
-const adminCode = localStorage.getItem("adminCode") || "N/A";
+        // 3. Initialize Page Data
+        document.addEventListener("DOMContentLoaded", () => {
+            typeWriter();
+            document.getElementById("yourHallName").innerText = "Your Hall: " + adminCode;
+        });
 
-// 2. Dynamic Welcome Message (Typewriter)
-let welcomeText = "WELCOME " + adminName.toUpperCase() + "!";
-let i = 0;
-function typeWriter() {
-    if (i < welcomeText.length) {
-        document.getElementById("welcomeText").innerHTML += welcomeText.charAt(i);
-        i++;
-        setTimeout(typeWriter, 100);
-    }
-}
+        // 4. Logout Logic (Clears LocalStorage and redirects)
+        function logout() {
+            localStorage.removeItem("adminName");
+            localStorage.removeItem("adminCode");
+            localStorage.removeItem("adminStaffId");
+            window.location.href = "index.php";
+        }
 
-// 3. Initialize Page Data
-document.addEventListener("DOMContentLoaded", () => {
-    typeWriter();
-    document.getElementById("yourHallName").innerText = "Your Hall: " + adminCode;
-});
-
-// 4. Logout Logic (Clears LocalStorage and redirects)
-function logout() {
-    localStorage.removeItem("adminName");
-    localStorage.removeItem("adminCode");
-    localStorage.removeItem("adminStaffId");
-    window.location.href = "index.php"; 
-}
-
-// 5. Tab Management
-function openTab(tabId) {
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    document.getElementById(tabId).classList.add('active');
-}
-</script>
+        // 5. Tab Management
+        function openTab(tabId) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+        }
+    </script>
 
 </body>
+
 </html>

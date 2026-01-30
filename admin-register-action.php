@@ -30,20 +30,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $sql = "INSERT INTO admins (full_name, hostel_code, email, phone, cnic_staff_id, password, admin_photo, id_card_photo, staff_card_photo) 
             VALUES ('$name', '$h_code', '$email', '$phone', '$cnic', '$password', '$admin_img', '$id_img', '$staff_img')";
 
-    // --- ADD THE BLOCK HERE ---
-    // --- UPDATED REDIRECT BLOCK ---
+    
     if (mysqli_query($conn, $sql)) {
-        
-        
-        
-        // This adds the pop-up box before moving to index.php
         echo "<script>alert('Admin Registration Successful!'); window.location.href='index.php';</script>";
        
     } else {
         echo "<h1>Database Error</h1>";
         echo "Error details: " . mysqli_error($conn);
     }
-    // ------------------------------
-    // --------------------------
+    
 }
 ?>
